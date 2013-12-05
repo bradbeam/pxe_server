@@ -1,0 +1,13 @@
+[root@default-centos-64 pxelinux.cfg]# pwd
+/var/lib/tftpboot/X86PC/UNDI/pxelinux/pxelinux.cfg
+[root@default-centos-64 pxelinux.cfg]# cat 01-08-00-27-df-3c-a4 
+DEFAULT pxe
+PROMPT 0
+MENU TITLE PXE BOOT MENU
+NOESCAPE 1
+
+LABEL pxe
+       kernel /vmlinuz
+       MENU LABEL RHEL 6.5
+       append initrd=/initrd.img ksdevice=bootif lang=en text method=http://192.168.100.10/cdrom sshd ks=http://192.168.100.10/ks/080027df3ca4.ks
+       ipappend 2

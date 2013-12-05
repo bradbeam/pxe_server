@@ -1,0 +1,23 @@
+DEFAULT menu.c32
+PROMPT 0
+MENU TITLE PXE BOOT MENU
+TIMEOUT 200
+TOTALTIMEOUT 6000
+ONTIMEOUT local
+
+LABEL local
+        MENU LABEL (local)
+        MENU DEFAULT
+        LOCALBOOT 0
+
+LABEL RHEL 6.5
+       kernel /vmlinuz
+       MENU LABEL RHEL 6.5
+       append initrd=/initrd.img ksdevice=bootif lang=en text method=http://<%= node[:network][:interfaces][node[:pxe_server][:dhcpd][:args]][:addresses].keys.select{|x| x =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/}[0] %>/cdrom sshd 
+       ipappend 2
+
+LABEL RHEL 6.4
+       kernel /vmlinuz
+       MENU LABEL RHEL 6.4
+       append initrd=/initrd.img ksdevice=bootif lang=en text method=http://<%= node[:network][:interfaces][node[:pxe_server][:dhcpd][:args]][:addresses].keys.select{|x| x =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/}[0] %>/cdrom2 sshd 
+       ipappend 2

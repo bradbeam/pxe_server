@@ -1,0 +1,31 @@
+ddns-update-style none;
+option space PXE;
+option PXE.mtftp-ip    code 1 = ip-address;
+option PXE.mtftp-cport code 2 = unsigned integer 16;
+option PXE.mtftp-sport code 3 = unsigned integer 16;
+option PXE.mtftp-tmout code 4 = unsigned integer 8;
+option PXE.mtftp-delay code 5 = unsigned integer 8;  
+
+subnet <%= @dhcpd[:subnet] %> netmask <%= @dhcpd[:netmask] %> {
+<% unless @dhcpd[:domainname].nil? %>
+  option domain-name "<%= @dhcpd[:domainname] %>";
+<% end %>
+<% unless @dhcpd[:routers].nil? %>
+  option routers <%= @dhcpd[:routers] %>;
+<% end %>
+<% unless @dhcpd[:dns_servers].nil? %>
+  option domain-name-servers <%= @dhcpd[:dns_servers] %>;
+<% end %>
+<% unless @dhcpd[:subnetmask].nil? %>
+  option subnet-mask <%= @dhcpd[:subnetmask] %>;
+<% end %>
+<% unless @dhcpd[:range].nil? %>
+  range <%= @dhcpd[:range] %>;
+<% end %>
+
+  class "pxeclients" {
+    match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
+    next-server <%= node[:network][:interfaces][node[:pxe_server][:dhcpd][:args]][:addresses].keys.select{|x| x =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/}[0] %>;
+    filename "X86PC/UNDI/pxelinux/pxelinux.0";
+  }
+}
